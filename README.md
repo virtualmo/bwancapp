@@ -8,6 +8,7 @@ bwanCapp.py is a tool that help configure, query, and delete Netskope Borderless
 1. Python3
 2. The following python modules (see requirements.txt)
 	- requests
+  - tabulate
 
 
 
