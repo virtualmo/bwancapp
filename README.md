@@ -53,21 +53,23 @@ options:
 ```
 
 ### Create Custom App From file
-1. Create csv file with the IP address and custom app name as per the following format:
+1. Create csv file with the IP address and custom app name as per the following format (IP address with the same name will be added to the same custom app. And if more than 100 IP share the same app name it will be split into -1 -2 , etc):
 ```
 name,address
 app1,192.168.1.1
+app1,192.168.1.2
+app1,192.168.1.3
 app2,192.168.2.0/24
 app3,www.example.com
 ```
 2. Run the script:
 ```
 $ python3 bwanCapp.py -u https://<TENANT_URL>/ -t <TOKEN> -a ip_file.csv
-2024-07-19 11:24:04,975 WARNING: Config file doesn't exit, will look into CLI arguments
-2024-07-19 11:24:04,975 INFO: Working with tenant: https://<TENANT_URL>/
-2024-07-19 11:24:04,976 INFO: Creating custom app: capp-app1
-2024-07-19 11:24:05,274 INFO: Creating custom app: capp-app2
-2024-07-19 11:24:05,479 INFO: Creating custom app: capp-app3
+2024-07-19 11:52:08,672 WARNING: Config file doesn't exit, will look into CLI arguments
+2024-07-19 11:52:08,672 INFO: Working with tenant: <TENANT_URL>
+2024-07-19 11:52:08,672 INFO: Creating custom app: capp-app1
+2024-07-19 11:52:09,180 INFO: Creating custom app: capp-app2
+2024-07-19 11:52:09,369 INFO: Creating custom app: capp-app3
 ```
 
 3. Confirm the Custom App is created in the orchestrator und Configure > Custom Apps
