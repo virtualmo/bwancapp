@@ -346,7 +346,7 @@ def main():
             exit(0)
           info("The script will delete {} custom app".format(len(id_list)))
           while True:
-            answer = input("Do you want to Continue? ")
+            answer = input("Do you want to Continue? (Yes/Y or No/N) ")
             if answer.lower() in ["y","yes"]:
               for app_id in id_list:
                 del_custom_app(session, headers, tenant_url, app_id)

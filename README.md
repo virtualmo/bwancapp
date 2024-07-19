@@ -74,6 +74,58 @@ $ python3 bwanCapp.py -u https://<TENANT_URL>/ -t <TOKEN> -a ip_file.csv
 
 3. Confirm the Custom App is created in the orchestrator und Configure > Custom Apps
 
+### Delete Custom App(s)
+1. Get the list of Apps and IDs
+```
+$ python3 bwanCapp.py -u <TENANT_URL> -t <TOKEN> -g
+2024-07-19 11:58:15,801 WARNING: Config file doesn't exit, will look into CLI arguments
+2024-07-19 11:58:15,801 INFO: Working with tenant: <TENANT_URL>
+2024-07-19 11:58:15,801 INFO: Getting custom apps
++--------------------------+-------------+
+| id                       | capp_name   |
++==========================+=============+
+| 669a46bdf4e33791bd438775 | capp-app1   |
++--------------------------+-------------+
+| 669a46bdf4e33791bd438795 | capp-app2   |
++--------------------------+-------------+
+| 669a46bef4e33791bd4387d5 | capp-app3   |
++--------------------------+-------------+
+
+Total number of Custom Apps is 3
+```
+
+2. Delete the Custom App using the ID
+```
+$ python3 bwanCapp.py -u <TENANT_URL> -t <TOKEN> -d 669a46bef4e33791bd4387d5
+2024-07-19 11:59:07,856 WARNING: Config file doesn't exit, will look into CLI arguments
+2024-07-19 11:59:07,856 INFO: Working with tenant: <TENANT_URL>
+2024-07-19 11:59:07,856 INFO: deleting custom app with ID 669a46bef4e33791bd4387d5
+```
+
+3. You can delete all custom apps by passing 0 as ID **BE CAREFUL**
+```
+$ python3 bwanCapp.py -u <TENANT_URL> -t <TOKEN> -d 0
+2024-07-19 12:01:49,075 WARNING: Config file doesn't exit, will look into CLI arguments
+2024-07-19 12:01:49,075 INFO: Working with tenant: <TENANT_URL>
+2024-07-19 12:01:49,075 INFO: Getting custom apps
++--------------------------+-------------+
+| id                       | capp_name   |
++==========================+=============+
+| 669a479680ee76bd7b468030 | capp-app1   |
++--------------------------+-------------+
+| 669a479780ee76bd7b46805a | capp-app2   |
++--------------------------+-------------+
+| 669a479780ee76bd7b468095 | capp-app3   |
++--------------------------+-------------+
+
+Total number of Custom Apps is 3
+
+2024-07-19 12:01:49,350 INFO: The script will delete 3 custom app
+Do you want to Continue? (Yes/Y or No/N) yes
+2024-07-19 12:01:53,212 INFO: deleting custom app with ID 669a479680ee76bd7b468030
+2024-07-19 12:01:53,398 INFO: deleting custom app with ID 669a479780ee76bd7b46805a
+2024-07-19 12:01:53,943 INFO: deleting custom app with ID 669a479780ee76bd7b468095
+```
 
 ## Disclaimer
 
