@@ -53,6 +53,24 @@ options:
                         Custom App name prefix. Default: capp
 ```
 
+### BWAN Token 
+1. Log in to the SASE Orchestrator as a System Admin and navigate to Administration > Tokens.
+2. Click the + icon to create a new token.
+3. Provide a Name and Permissions details. The Permissions must be supplied in JSON format. use the following permissions
+```
+[
+  {
+    "rap_resource": "",
+    "rap_privs": [
+      "privCustomAppCreate",
+      "privCustomAppWrite",
+      "privCustomAppDelete"
+    ]
+  }
+]
+```
+4. Modify the expiration date as required.
+
 ### Create Custom App From file
 1. Create csv file with the IP address and custom app name as per the following format (IP address with the same name will be added to the same custom app. And if more than 100 IP share the same app name it will be split into -1 -2 , etc):
 ```
