@@ -64,6 +64,7 @@ options:
     "rap_privs": [
       "privCustomAppCreate",
       "privCustomAppWrite",
+      "privCustomAppRead",
       "privCustomAppDelete"
     ]
   }
