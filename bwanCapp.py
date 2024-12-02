@@ -176,17 +176,31 @@ def add_custom_apps(session,headers, tenant_url, data_file, capp_name_prefix):
   with open(data_file, "r") as f:
     reader = csv.reader(f)
     next(reader)
-    for ticket, asset in reader:
-        ip_data_dict.setdefault(ticket, []).append(asset)
+    for name,address,protocl,port in reader:
+        ip_data_dict.setdefault(name, []).append([address,protocl,port])
   
   json_dump_def_list = []
   c = 0
   capp_c = 0
   for key, value in ip_data_dict.items():
-    if len(value) > 100:    
-      for ip_addr in value:
-        c += 1
+    for entry in value:
+      ip_addr=entry[0]
+      if entry[2] == "*":
         port_range = "0-65535"
+      else:
+        port_range = entry[2]
+        
+      if entry[1].upper() == "TCP":
+        protocol = "TCP"
+        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
+      elif entry[1].upper() == "UDP":
+        protocol = "UDP"
+        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
+      elif entry[1].upper() == "ICMP":
+        protocol = "ICMP"
+        port_range = "null"
+        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
+      elif entry[1].upper() == "ANY":
         protocol = "TCP"
         json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
         protocol = "UDP"
@@ -194,72 +208,34 @@ def add_custom_apps(session,headers, tenant_url, data_file, capp_name_prefix):
         protocol = "ICMP"
         port_range = "null"
         json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
-        if c > 100:
-          capp_c += 1
-          capp_name = capp_name_prefix + "-" + key + "-" + str(capp_c)
-          capp_desc = capp_name_prefix + "-" + key + "-" + str(capp_c)
-          query = json.dumps({
-            "variables": {
-              "data": {
-                  "capp_name": capp_name,
-                  "capp_type": "Standard",
-                  "capp_type_id": 24,
-                  "capp_description": capp_desc,
-                  # "capp_icon_url": null,
-                  "capp_definitions": [
-                      ''.join(json_dump_def_list)[:-1]
-                  ],
-                  # "capp_sites": null,
-                  # "capp_enabled": null
-              }
-          },
-          "query": "mutation ($data: AddCustomAppInput!) {\n  createCustomApp(newCustomAppData: $data) {\n    id\n    capp_name\n    capp_description\n    capp_enabled\n    capp_native\n    capp_type\n    capp_type_id\n    capp_icon_url\n    capp_sites {\n      capp_site_id\n      capp_site_overlay_ip\n      __typename\n    }\n    capp_definitions {\n      capp_def_web_access\n      capp_def_protocol\n      capp_def_host\n      capp_def_port_range\n      __typename\n    }\n    nddb_created\n    nddb_modified\n    createdBy {\n      id\n      auc_name\n      __typename\n    }\n    modifiedBy {\n      id\n      auc_name\n      __typename\n    }\n    __typename\n  }\n}"
-          }) 
-          parsed_query = query.replace("[\"","[").replace("\"]","]").replace("\\\"","\"")
-          # print(parsed_query)
-          info("Creating custom app: {}".format(capp_name))
-          response = graphql_request(session, tenant_url, headers, parsed_query)
-          response_data = response.json()
-          json_dump_def_list = []
-          c = 0
-    else: 
-      for ip_addr in value:
-        port_range = "0-65535"
-        protocol = "TCP"
-        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
-        protocol = "UDP"
-        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
-        protocol = "ICMP"
-        port_range = "null"
-        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
-      capp_name = capp_name_prefix + "-" + key
-      capp_desc = capp_name_prefix + "-" + key
-      query = json.dumps({
-        "variables": {
-          "data": {
-              "capp_name": capp_name,
-              "capp_type": "Standard",
-              "capp_type_id": 24,
-              "capp_description": capp_desc,
-              # "capp_icon_url": null,
-              "capp_definitions": [
-                  ''.join(json_dump_def_list)[:-1]
-              ],
-              # "capp_sites": null,
-              # "capp_enabled": null
-          }
-      },
-      "query": "mutation ($data: AddCustomAppInput!) {\n  createCustomApp(newCustomAppData: $data) {\n    id\n    capp_name\n    capp_description\n    capp_enabled\n    capp_native\n    capp_type\n    capp_type_id\n    capp_icon_url\n    capp_sites {\n      capp_site_id\n      capp_site_overlay_ip\n      __typename\n    }\n    capp_definitions {\n      capp_def_web_access\n      capp_def_protocol\n      capp_def_host\n      capp_def_port_range\n      __typename\n    }\n    nddb_created\n    nddb_modified\n    createdBy {\n      id\n      auc_name\n      __typename\n    }\n    modifiedBy {\n      id\n      auc_name\n      __typename\n    }\n    __typename\n  }\n}"
-      }) 
-      parsed_query = query.replace("[\"","[").replace("\"]","]").replace("\\\"","\"")
-      # print(parsed_query)
-      info("Creating custom app: {}".format(capp_name))
-      response = graphql_request(session, tenant_url, headers, parsed_query)
-      response_data = response.json()
-      json_dump_def_list = []
-        
-        # print(response_data)
-        
+      else:
+        error("Unknown protocl or port. Allowed Protocol: TCP, UDP, ICMP or Any allowed. Allowed Port: single port or *")
+        exit()
+    capp_name = capp_name_prefix + "-" + key
+    capp_desc = capp_name_prefix + "-" + key
+    query = json.dumps({
+      "variables": {
+        "data": {
+            "capp_name": capp_name,
+            "capp_type": "Standard",
+            "capp_type_id": 24,
+            "capp_description": capp_desc,
+            # "capp_icon_url": null,
+            "capp_definitions": [
+                ''.join(json_dump_def_list)[:-1]
+            ],
+            # "capp_sites": null,
+            # "capp_enabled": null
+        }
+    },
+    "query": "mutation ($data: AddCustomAppInput!) {\n  createCustomApp(newCustomAppData: $data) {\n    id\n    capp_name\n    capp_description\n    capp_enabled\n    capp_native\n    capp_type\n    capp_type_id\n    capp_icon_url\n    capp_sites {\n      capp_site_id\n      capp_site_overlay_ip\n      __typename\n    }\n    capp_definitions {\n      capp_def_web_access\n      capp_def_protocol\n      capp_def_host\n      capp_def_port_range\n      __typename\n    }\n    nddb_created\n    nddb_modified\n    createdBy {\n      id\n      auc_name\n      __typename\n    }\n    modifiedBy {\n      id\n      auc_name\n      __typename\n    }\n    __typename\n  }\n}"
+    }) 
+    parsed_query = query.replace("[\"","[").replace("\"]","]").replace("\\\"","\"")
+    # print(parsed_query)
+    info("Creating custom app: {}".format(capp_name))
+    response = graphql_request(session, tenant_url, headers, parsed_query)
+    response_data = response.json()
+    json_dump_def_list = []
 
 
 def main():

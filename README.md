@@ -73,14 +73,14 @@ options:
 4. Modify the expiration date as required.
 
 ### Create Custom App From file
-1. Create csv file with the IP address and custom app name as per the following format (IP address with the same name will be added to the same custom app. And if more than 100 IP share the same app name it will be split into -1 -2 , etc):
+1. Create csv file with the IP address and custom app name as per the following format __(Entries with the same app name will be added to the same custom app. Allowed Protocol: TCP, UDP, ICMP or Any allowed. Allowed Port: single port or *)__ :
 ```
-name,address
-app1,192.168.1.1
-app1,192.168.1.2
-app1,192.168.1.3
-app2,192.168.2.0/24
-app3,www.example.com
+name,address,protocl,port
+app1,192.168.1.1,tcp,80
+app1,192.168.1.2,udp,443
+app1,192.168.1.3,any,*
+app2,192.168.2.0/24,any,8080
+app3,www.example.com,tcp,80
 ```
 2. Run the script:
 ```
