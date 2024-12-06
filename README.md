@@ -60,13 +60,13 @@ options:
 ```
 [
   {
-    "privilege": [
+    "rap_privs": [
       "privCustomAppCreate",
       "privCustomAppWrite",
       "privCustomAppRead",
       "privCustomAppDelete"
     ],
-    "resource": ""
+    "rap_resource": ""
   }
 ]
 ```
