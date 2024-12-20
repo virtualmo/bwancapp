@@ -208,8 +208,12 @@ def add_custom_apps(session,headers, tenant_url, data_file, capp_name_prefix):
         protocol = "ICMP"
         port_range = "null"
         json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
+      elif entry[1].upper() == "IPV4":
+        protocol = "IPv4"
+        port_range = "null"
+        json_dump_def_list.append(capp_def_str(ip_addr,port_range,protocol))
       else:
-        error("Unknown protocl or port. Allowed Protocol: TCP, UDP, ICMP or Any allowed. Allowed Port: single port or *")
+        error("Unknown protocl or port. Allowed Protocol: TCP, UDP, ICMP IPv4, or Any allowed. Allowed Port: single port or *")
         exit()
     capp_name = capp_name_prefix + "-" + key
     capp_desc = capp_name_prefix + "-" + key
