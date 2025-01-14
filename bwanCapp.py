@@ -301,6 +301,10 @@ def main():
                   ('api_token' not in cfgparser['bwan_config'])):
               error("Config file doesn't contain (all) required authentication info")
               sys.exit(1)
+          else:
+            config = cfgparser['bwan_config']
+            tenant_url=config['tenant_url']
+            bwan_api_token=config['api_token']
     except:
         error("Can't parse configuration file {}"
               "".format(os.path.expanduser(CONFIG_FILENAME)))
@@ -314,9 +318,6 @@ def main():
 
     if args.get_custom_apps:
        get_custom_apps(session, headers, tenant_url)
-
-    # if args.add_custom_app:
-    #     add_custom_app(session, headers, tenant_url, ip_list_file=args.add_custom_app)
     
     if args.del_custom_app:
        if args.del_custom_app == "0":
